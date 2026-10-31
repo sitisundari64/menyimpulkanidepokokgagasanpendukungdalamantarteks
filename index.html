@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4338ca">
+<title>TKA Bahasa Indonesia Kelas IX | Siti Sundari</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+:root {
+ --primary:#5145cd; --secondary:#06b6d4; --ink:#26324b;
+ --bg:#f5f6ff; --purple:#ede9fe;
+}
+*{box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);margin:0}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer;transition:.2s}
+button:active{transform:scale(.97)}
+h1,h2,h3{font-family:'Poppins',sans-serif}
+.app-header{background:linear-gradient(115deg,#312e81,#5145cd 65%,#0891b2);color:white}
+.nav-btn{padding:10px 13px;border-radius:12px;font-weight:800;font-size:13px;color:#64748b;white-space:nowrap}
+.nav-btn.active{background:#ede9fe;color:#5145cd}
+.page{display:none;animation:fade .35s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.panel{background:white;border-radius:22px;padding:22px;box-shadow:0 5px 22px #26324b0a;border:1px solid #edf0fa}
+.card{background:white;border:1px solid #e9eaf5;border-radius:20px;padding:18px;transition:.25s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #4338ca12}
+.btn-primary{background:linear-gradient(110deg,#5145cd,#7c3aed);color:white;padding:12px 22px;border-radius:14px;font-weight:900;box-shadow:0 5px 12px #5145cd30}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-soft{background:#ede9fe;color:#5145cd;padding:11px 17px;border-radius:13px;font-weight:800}
+.pill{display:inline-block;border-radius:30px;padding:5px 12px;font-size:12px;font-weight:900}
+.tab{padding:10px 15px;border-radius:12px;background:#f1f5f9;font-weight:800;font-size:13px}
+.tab.active{background:#5145cd;color:white}
+.progress{height:9px;background:#e8eaf4;border-radius:20px;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#5145cd,#06b6d4);transition:.3s}
+.answer{display:block;text-align:left;padding:14px;border:2px solid #e5e7eb;border-radius:14px;width:100%;margin:9px 0;font-weight:800;background:white}
+.answer:hover{border-color:#818cf8;background:#f5f3ff}
+.answer.correct{border-color:#16a34a;background:#dcfce7;color:#166534}
+.answer.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.note{background:#fff4b8;border-radius:4px 15px 15px 15px;padding:15px;box-shadow:3px 5px 9px #00000012;transform:rotate(-1deg);min-height:115px}
+.note:nth-child(even){background:#dff7ff;transform:rotate(1deg)}
+.note:nth-child(3n){background:#f2e8ff;transform:rotate(-2deg)}
+input,textarea{outline:none}
+.field{border:2px solid #e5e7eb;border-radius:12px;padding:12px;width:100%;background:white}
+.field:focus{border-color:#818cf8}
+.hero{background:linear-gradient(125deg,#e8e7ff,#e0f7ff);border-radius:28px;overflow:hidden}
+.icon-box{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:21px}
+.quiz-choice:disabled{cursor:default}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:12px 20px;border-radius:14px;z-index:100;display:none;box-shadow:0 5px 20px #0002}
+footer{background:#22234b;color:white}
+@media(max-width:640px){
+ .panel{padding:16px}.hero{padding:22px!important}
+ .nav-btn{font-size:12px;padding:9px}
+ h1{font-size:27px!important}
+}
+</style>
+</head>
+
+<body>
+
+<header class="app-header sticky top-0 z-40 shadow-lg">
+ <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-3">
+  <div class="flex items-center gap-3">
+   <div class="bg-white/20 rounded-xl p-3"><i class="fa-solid fa-book-open text-xl"></i></div>
+   <div>
+    <div class="font-black text-sm md:text-lg">TKA BAHASA INDONESIA</div>
+    <div class="text-xs text-indigo-100">MEDIA PEMBELAJARAN INTERAKTIF • KELAS IX</div>
+   </div>
+  </div>
+  <div class="flex items-center gap-2">
+   <button onclick="go('home')" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-xl text-xs font-bold">
+    <i class="fa-solid fa-house"></i><span class="hidden sm:inline"> Beranda</span>
+   </button>
+   <button onclick="toggleAudio()" id="audioBtn" class="bg-white/15 px-3 py-2 rounded-xl text-xs font-bold">
+    <i class="fa-solid fa-volume-xmark"></i> <span>Audio OFF</span>
+   </button>
+  </div>
+ </div>
+</header>
+
+<div class="bg-white border-b sticky top-[65px] z-30">
+ <nav class="max-w-7xl mx-auto px-3 py-2 flex gap-1 overflow-x-auto">
+  <button class="nav-btn active" data-page="home" onclick="go('home')"><i class="fa-solid fa-house"></i> Home</button>
+  <button class="nav-btn" data-page="tujuan" onclick="go('tujuan')">🎯 Tujuan</button>
+  <button class="nav-btn" data-page="pemantik" onclick="go('pemantik')">💡 Pemantik</button>
+  <button class="nav-btn" data-page="materi" onclick="go('materi')">📚 Materi</button>
+  <button class="nav-btn" data-page="simulasi" onclick="go('simulasi')">🔬 Simulasi</button>
+  <button class="nav-btn" data-page="kuis" onclick="go('kuis')">🏆 Kuis</button>
+  <button class="nav-btn" data-page="games" onclick="go('games')">🎮 Games</button>
+  <button class="nav-btn" data-page="kesimpulan" onclick="go('kesimpulan')">⭐ Kesimpulan</button>
+  <button class="nav-btn" data-page="refleksi" onclick="go('refleksi')">📝 Refleksi</button>
+ </nav>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+<!-- HOME -->
+<section id="home" class="page active">
+ <div class="hero p-7 md:p-12 grid md:grid-cols-2 gap-7 items-center">
+  <div>
+   <span class="pill bg-white text-indigo-700">✨ TKA • LITERASI MEMBACA</span>
+   <h1 class="text-3xl md:text-5xl font-black text-indigo-950 mt-4 leading-tight">Jelajahi Dunia Teks, Temukan Maknanya!</h1>
+   <p class="text-slate-600 mt-4 leading-relaxed font-semibold">
+    Belajar memahami ide pokok, gagasan pendukung, tokoh, peristiwa, latar, tujuan penulis, dan amanat melalui aktivitas seru dan menantang.
+   </p>
+   <div class="flex flex-wrap gap-3 mt-6">
+    <button class="btn-primary" onclick="go('tujuan')">Mulai Belajar <i class="fa-solid fa-arrow-right ml-2"></i></button>
+    <button class="btn-soft" onclick="go('kuis')">Coba Kuis</button>
+   </div>
+   <div class="flex gap-4 mt-6 text-xs font-bold text-indigo-700">
+    <span><i class="fa-solid fa-clock"></i> 3 × 40 Menit</span>
+    <span><i class="fa-solid fa-users"></i> Kelas IX</span>
+   </div>
+  </div>
+  <div class="flex justify-center">
+   <img src="https://i.ibb.co.com/hFJHmgp2/Desain-tanpa-judul-9.png" alt="Ilustrasi pembelajaran" class="w-full max-w-md rounded-3xl object-contain max-h-80" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+   <div style="display:none" class="text-8xl">📖🧑‍🎓💡</div>
+  </div>
+ </div>
+
+ <div class="mt-8">
+  <h2 class="text-xl font-black mb-4">🚀 Peta Petualangan Belajar</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="homeCards"></div>
+ </div>
+
+ <div class="panel mt-7">
+  <h3 class="font-black text-lg mb-3">🧭 Petunjuk Penggunaan</h3>
+  <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm font-bold text-slate-600">
+   <div> <span class="text-2xl">1️⃣</span><p class="mt-2">Pelajari tujuan dan pertanyaan pemantik.</p></div>
+   <div> <span class="text-2xl">2️⃣</span><p class="mt-2">Baca materi dan eksplorasi simulasi.</p></div>
+   <div> <span class="text-2xl">3️⃣</span><p class="mt-2">Kerjakan kuis serta permainan.</p></div>
+   <div> <span class="text-2xl">4️⃣</span><p class="mt-2">Tuliskan refleksi pembelajaran.</p></div>
+  </div>
+ </div>
+ <div class="mt-6 text-center text-sm text-slate-500 font-bold">🌟 Belajar dengan sadar, bermakna, dan menggembirakan!</div>
+</section>
+
+<!-- TUJUAN -->
+<section id="tujuan" class="page">
+ <div class="mb-6">
+  <span class="pill bg-violet-100 text-violet-700">01 • TARGET BELAJAR</span>
+  <h1 class="text-3xl font-black mt-3">🎯 Tujuan Pembelajaran</h1>
+  <p class="text-slate-500 mt-2">Setelah kegiatan belajar, peserta didik diharapkan mampu:</p>
+ </div>
+ <div class="grid md:grid-cols-2 gap-4">
+  <div class="card"><div class="icon-box bg-violet-100 text-violet-700">📌</div><h3 class="font-black mt-3">Memahami Informasi Teks</h3><p class="text-sm text-slate-600 mt-2">Mengidentifikasi ide pokok dan gagasan pendukung dalam teks secara tepat.</p></div>
+  <div class="card"><div class="icon-box bg-cyan-100 text-cyan-700">🔍</div><h3 class="font-black mt-3">Menganalisis Unsur Teks</h3><p class="text-sm text-slate-600 mt-2">Menyimpulkan tokoh, karakter, peristiwa, latar, dan nilai-nilai dalam teks.</p></div>
+  <div class="card"><div class="icon-box bg-amber-100 text-amber-700">✍️</div><h3 class="font-black mt-3">Menafsirkan Tujuan Penulis</h3><p class="text-sm text-slate-600 mt-2">Menyimpulkan tujuan penulis serta isi atau substansi teks berdasarkan bukti.</p></div>
+  <div class="card"><div class="icon-box bg-emerald-100 text-emerald-700">📖</div><h3 class="font-black mt-3">Menentukan Amanat</h3><p class="text-sm text-slate-600 mt-2">Menjelaskan pesan atau amanat yang disampaikan melalui teks.</p></div>
+  <div class="card"><div class="icon-box bg-pink-100 text-pink-700">🔄</div><h3 class="font-black mt-3">Menganalisis Perubahan</h3><p class="text-sm text-slate-600 mt-2">Mengidentifikasi perubahan unsur intrinsik serta pengaruhnya terhadap makna cerita.</p></div>
+  <div class="card"><div class="icon-box bg-blue-100 text-blue-700">🧠</div><h3 class="font-black mt-3">Menyimpulkan Antarteks</h3><p class="text-sm text-slate-600 mt-2">Membandingkan informasi, nilai, dan substansi dari dua teks atau lebih.</p></div>
+ </div>
+ <div class="panel mt-5 bg-indigo-50">
+  <h3 class="font-black">🌱 Manfaat Pembelajaran</h3>
+  <p class="text-sm mt-2 text-slate-700">Keterampilan ini membantu kita membaca berita, cerita, artikel, dan informasi digital secara kritis agar tidak mudah salah memahami pesan atau terpengaruh informasi yang keliru.</p>
+ </div>
+</section>
+
+<!-- PEMANTIK -->
+<section id="pemantik" class="page">
+ <span class="pill bg-amber-100 text-amber-700">02 • AKTIVASI PENGETAHUAN</span>
+ <h1 class="text-3xl font-black mt-3">💡 Pertanyaan Pemantik</h1>
+ <p class="text-slate-500 mt-2 mb-6">Tarik napas, fokus, lalu pikirkan pengalamanmu sebelum membuka kartu.</p>
+ <div class="panel mb-5 bg-gradient-to-r from-amber-50 to-pink-50">
+  <div class="text-3xl">🧘‍♀️</div>
+  <h3 class="font-black mt-2">Mindful Reading – 30 Detik</h3>
+  <p class="text-sm text-slate-600 mt-2">Duduk nyaman. Tarik napas perlahan. Ingat satu cerita atau berita yang pernah kamu baca. Apa hal paling penting yang kamu ingat?</p>
+  <button class="btn-soft mt-3" onclick="mindful()">Mulai Fokus <i class="fa-solid fa-wind ml-1"></i></button>
+ </div>
+ <div class="grid md:grid-cols-2 gap-5">
+  <div class="card">
+   <div class="text-4xl">📰</div>
+   <h3 class="font-black text-lg mt-3">Kartu Tantangan 1</h3>
+   <p class="text-sm text-slate-600 mt-2">Sebuah berita menjelaskan banjir, penyebabnya, dampaknya, dan upaya warga. Bagaimana cara menemukan inti informasi berita tersebut?</p>
+   <button class="btn-soft mt-4" onclick="reveal('reveal1',this)">Buka Petunjuk</button>
+   <div id="reveal1" class="hidden mt-4 bg-indigo-50 p-4 rounded-xl text-sm">Carilah kalimat atau informasi yang menjadi pusat pembahasan. Perhatikan hubungan antara penyebab, dampak, dan tindakan yang dijelaskan.</div>
+  </div>
+  <div class="card">
+   <div class="text-4xl">📚</div>
+   <h3 class="font-black text-lg mt-3">Kartu Tantangan 2</h3>
+   <p class="text-sm text-slate-600 mt-2">Dalam cerita, seorang tokoh yang awalnya egois berubah menjadi suka menolong. Mengapa perubahan itu penting bagi cerita?</p>
+   <button class="btn-soft mt-4" onclick="reveal('reveal2',this)">Buka Petunjuk</button>
+   <div id="reveal2" class="hidden mt-4 bg-pink-50 p-4 rounded-xl text-sm">Perubahan karakter dapat menunjukkan perkembangan tokoh, konflik, dan pesan yang ingin disampaikan penulis.</div>
+  </div>
+ </div>
+ <div class="panel mt-5">
+  <h3 class="font-black">💬 Diskusi Singkat</h3>
+  <p class="text-sm text-slate-600 mt-2">Menurutmu, apakah dua orang bisa memiliki kesimpulan berbeda setelah membaca teks yang sama? Jelaskan alasannya.</p>
+  <textarea id="pemantikAnswer" class="field mt-3" rows="3" placeholder="Tuliskan pendapatmu..."></textarea>
+ </div>
+</section>
+
+<!-- MATERI -->
+<section id="materi" class="page">
+ <span class="pill bg-cyan-100 text-cyan-700">03 • EKSPLORASI KONSEP</span>
+ <h1 class="text-3xl font-black mt-3">📚 Materi Belajar Interaktif</h1>
+ <p class="text-slate-500 mt-2 mb-5">Pilih submateri untuk menjelajahi konsep.</p>
+ <div id="materiTabs" class="flex flex-wrap gap-2 mb-5"></div>
+ <div id="materiContent" class="panel min-h-72"></div>
+</section>
+
+<!-- SIMULASI -->
+<section id="simulasi" class="page">
+ <span class="pill bg-emerald-100 text-emerald-700">04 • PRAKTIK ANALISIS</span>
+ <h1 class="text-3xl font-black mt-3">🔬 Laboratorium Analisis Teks</h1>
+ <p class="text-slate-500 mt-2 mb-5">Manipulasikan pilihan untuk melihat bagaimana kesimpulan dibangun dari bukti teks.</p>
+ <div class="panel">
+  <h3 class="font-black text-lg">🌳 Teks: Gerakan Menanam Pohon</h3>
+  <div class="bg-emerald-50 rounded-xl p-4 mt-3 leading-relaxed text-sm">
+   Pada hari Sabtu, siswa SMP Harapan mengadakan kegiatan menanam pohon di lingkungan sekolah. Kegiatan dipimpin oleh Raka dan dibantu oleh teman-temannya. Mereka menanam 30 bibit pohon di halaman yang sebelumnya gersang. Raka menjelaskan bahwa pohon dapat membuat udara lebih sejuk dan membantu menyerap air hujan. Meskipun cuaca panas, para siswa tetap bekerja sama hingga kegiatan selesai. Kepala sekolah berharap kegiatan tersebut menjadi kebiasaan baik yang terus dilakukan.
+  </div>
+  <div class="grid md:grid-cols-2 gap-4 mt-5">
+   <div>
+    <label class="font-black text-sm">1. Pilih fokus analisis</label>
+    <select id="simFocus" class="field mt-2" onchange="runSimulation()">
+     <option value="ide">Ide pokok</option><option value="tokoh">Tokoh dan karakter</option>
+     <option value="latar">Latar</option><option value="tujuan">Tujuan penulis</option>
+     <option value="amanat">Amanat</option><option value="peristiwa">Peristiwa</option>
+    </select>
+   </div>
+   <div>
+    <label class="font-black text-sm">2. Pilih bukti teks</label>
+    <select id="simEvidence" class="field mt-2" onchange="runSimulation()">
+     <option value="a">Siswa menanam 30 bibit pohon.</option>
+     <option value="b">Kegiatan dipimpin oleh Raka.</option>
+     <option value="c">Kegiatan dilaksanakan hari Sabtu.</option>
+     <option value="d">Para siswa tetap bekerja sama meskipun panas.</option>
+    </select>
+   </div>
+  </div>
+  <div id="simResult" class="mt-5 rounded-xl bg-indigo-50 p-5" aria-live="polite"></div>
+ </div>
+ <div class="panel mt-5">
+  <h3 class="font-black">🧩 Tantangan Mini: Susun Kesimpulan</h3>
+  <p class="text-sm text-slate-600 mt-2">Pilih kalimat yang paling tepat untuk menyimpulkan isi teks.</p>
+  <div id="simChallenge" class="mt-3 grid gap-2"></div>
+  <div id="simFeedback" class="mt-3 text-sm font-bold"></div>
+ </div>
+</section>
+
+<!-- KUIS -->
+<section id="kuis" class="page">
+ <span class="pill bg-amber-100 text-amber-700">05 • ASESMEN FORMATIF</span>
+ <h1 class="text-3xl font-black mt-3">🏆 Arena Kuis TKA</h1>
+ <p class="text-slate-500 mt-2 mb-5">Uji kemampuan literasi membaca dalam tiga tingkat tantangan.</p>
+
+ <div id="quizStart" class="panel">
+  <div class="text-center text-5xl mb-3">🎓</div>
+  <h2 class="text-center text-xl font-black">Siap Menjadi Juara Literasi?</h2>
+  <p class="text-center text-sm text-slate-500 mt-2">Masukkan nama untuk sertifikat hasil belajarmu.</p>
+  <div class="max-w-sm mx-auto mt-5">
+   <label class="font-bold text-sm">Nama lengkap siswa</label>
+   <input id="studentName" class="field mt-2" placeholder="Contoh: Shaka">
+  </div>
+  <div class="grid md:grid-cols-3 gap-3 mt-6">
+   <button onclick="startQuiz('mudah')" class="card text-left hover:border-emerald-400"><div class="text-3xl">🌱</div><h3 class="font-black mt-2">Level Mudah</h3><p class="text-xs text-slate-500 mt-1">Memahami informasi eksplisit dan konsep dasar.</p><span class="pill bg-emerald-100 text-emerald-700 mt-3">10 Soal</span></button>
+   <button onclick="startQuiz('sedang')" class="card text-left hover:border-amber-400"><div class="text-3xl">🚀</div><h3 class="font-black mt-2">Level Sedang</h3><p class="text-xs text-slate-500 mt-1">Menganalisis hubungan informasi dan inferensi.</p><span class="pill bg-amber-100 text-amber-700 mt-3">10 Soal</span></button>
+   <button onclick="startQuiz('sulit')" class="card text-left hover:border-red-400"><div class="text-3xl">🔥</div><h3 class="font-black mt-2">Level Sulit</h3><p class="text-xs text-slate-500 mt-1">Mengevaluasi antarteks dan perubahan unsur.</p><span class="pill bg-red-100 text-red-700 mt-3">10 Soal</span></button>
+  </div>
+ </div>
+
+ <div id="quizPlay" class="panel hidden">
+  <div class="flex justify-between items-center gap-3">
+   <span id="quizLevel" class="pill bg-indigo-100 text-indigo-700">LEVEL</span>
+   <button class="btn-soft text-xs" onclick="exitQuiz()">↩ Keluar / Ganti Level</button>
+  </div>
+  <div class="flex justify-between mt-4 text-sm font-bold"><span id="questionCounter">Soal 1/10</span><span id="scoreLive">Skor: 0</span></div>
+  <div class="progress mt-2"><div id="quizProgress" style="width:10%"></div></div>
+  <div id="questionArea" class="mt-6"></div>
+  <div id="answerFeedback" class="hidden rounded-xl p-4 mt-4 text-sm"></div>
+  <div class="flex justify-end mt-5">
+   <button id="nextQuestion" class="btn-primary hidden" onclick="nextQuestion()">Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i></button>
+  </div>
+ </div>
+
+ <div id="quizResult" class="panel hidden text-center">
+  <div class="text-6xl">🏆</div>
+  <h2 class="text-2xl font-black mt-3">Kuis Selesai!</h2>
+  <p id="resultName" class="text-slate-600 mt-2"></p>
+  <div class="text-5xl font-black text-indigo-700 my-5" id="finalScore">0</div>
+  <p id="resultMessage" class="font-bold text-slate-600"></p>
+  <div id="certificate" class="border-4 border-double border-indigo-400 rounded-2xl p-5 mt-6 max-w-lg mx-auto bg-indigo-50">
+   <div class="text-3xl">🎖️</div>
+   <h2 class="font-black text-xl text-indigo-900 mt-2">SERTIFIKAT LITERASI</h2>
+   <p class="text-xs mt-2">Diberikan kepada</p>
+   <h3 id="certName" class="font-black text-2xl text-indigo-700 my-2"></h3>
+   <p class="text-sm">Atas partisipasi dan pencapaian dalam Kuis TKA Bahasa Indonesia Kelas IX.</p>
+   <p id="certDetail" class="font-bold text-sm mt-3"></p>
+   <p class="text-xs text-slate-500 mt-4">SMP • Media Pembelajaran Interaktif</p>
+   <p class="text-xs font-bold mt-2">Siti Sundari, M.Pd.</p>
+  </div>
+  <div class="flex flex-wrap justify-center gap-3 mt-5">
+   <button class="btn-primary" onclick="window.print()">🖨️ Cetak Sertifikat</button>
+   <button class="btn-soft" onclick="exitQuiz()">Pilih Level Lain</button>
+  </div>
+ </div>
+</section>
+
+<!-- GAMES -->
+<section id="games" class="page">
+ <span class="pill bg-pink-100 text-pink-700">06 • BELAJAR SAMBIL BERMAIN</span>
+ <h1 class="text-3xl font-black mt-3">🎮 Misi Detektif Literasi</h1>
+ <p class="text-slate-500 mt-2 mb-5">Pasangkan konsep dengan penjelasan yang tepat. Klik dua kartu untuk mencocokkan.</p>
+ <div class="panel">
+  <div class="flex justify-between items-center">
+   <h3 class="font-black">🧩 Matching Challenge</h3>
+   <span class="pill bg-indigo-100 text-indigo-700" id="gameScore">Pasangan: 0/5</span>
+  </div>
+  <div id="gameBoard" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-5"></div>
+  <div id="gameFeedback" class="text-sm font-bold mt-4"></div>
+  <div class="flex gap-3 mt-5">
+   <button onclick="initGame()" class="btn-soft">🔄 Acak Ulang</button>
+  </div>
+ </div>
+ <div class="panel mt-5">
+  <h3 class="font-black">🌟 Misi Tambahan</h3>
+  <p class="text-sm text-slate-600 mt-2">Sebutkan satu bukti dalam teks yang dapat mendukung kesimpulanmu. Diskusikan dengan teman.</p>
+ </div>
+</section>
+
+<!-- KESIMPULAN -->
+<section id="kesimpulan" class="page">
+ <span class="pill bg-indigo-100 text-indigo-700">07 • PENGUATAN PEMAHAMAN</span>
+ <h1 class="text-3xl font-black mt-3">⭐ Kesimpulan Pembelajaran</h1>
+ <div class="panel mt-5">
+  <div class="text-5xl text-center">🧠</div>
+  <h2 class="text-xl font-black text-center mt-3">Membaca Bukan Sekadar Melihat Kata</h2>
+  <p class="text-center text-slate-500 text-sm mt-2">Membaca kritis berarti memahami, menafsirkan, menghubungkan, dan mengevaluasi informasi.</p>
+  <div class="grid md:grid-cols-2 gap-3 mt-6">
+   <div class="bg-violet-50 rounded-xl p-4"><b>📌 Ide pokok</b><p class="text-sm mt-1">Inti pembahasan utama dalam paragraf atau teks.</p></div>
+   <div class="bg-cyan-50 rounded-xl p-4"><b>🧩 Gagasan pendukung</b><p class="text-sm mt-1">Informasi yang menjelaskan atau menguatkan ide pokok.</p></div>
+   <div class="bg-amber-50 rounded-xl p-4"><b>👥 Unsur intrinsik</b><p class="text-sm mt-1">Tokoh, karakter, alur, latar, konflik, tema, dan amanat.</p></div>
+   <div class="bg-emerald-50 rounded-xl p-4"><b>🎯 Tujuan penulis</b><p class="text-sm mt-1">Maksud penulis, misalnya menginformasikan, menghibur, mengajak, atau meyakinkan.</p></div>
+   <div class="bg-pink-50 rounded-xl p-4"><b>💌 Amanat</b><p class="text-sm mt-1">Pesan atau nilai yang dapat dipetik dari teks.</p></div>
+   <div class="bg-blue-50 rounded-xl p-4"><b>🔄 Perubahan unsur</b><p class="text-sm mt-1">Perubahan karakter, latar, konflik, atau peristiwa yang dapat memengaruhi makna cerita.</p></div>
+  </div>
+  <div class="bg-indigo-50 rounded-xl p-5 mt-5">
+   <h3 class="font-black">Rumus Menyusun Kesimpulan</h3>
+   <p class="text-center font-black text-indigo-800 mt-3">Bukti Teks + Hubungan Informasi + Penalaran = Kesimpulan</p>
+  </div>
+ </div>
+ <div class="text-center mt-6">
+  <button class="btn-primary" onclick="go('refleksi')">Lanjut ke Refleksi <i class="fa-solid fa-arrow-right ml-2"></i></button>
+ </div>
+</section>
+
+<!-- REFLEKSI -->
+<section id="refleksi" class="page">
+ <span class="pill bg-pink-100 text-pink-700">08 • SUARA SISWA</span>
+ <h1 class="text-3xl font-black mt-3">📝 Papan Refleksi Kolaboratif</h1>
+ <p class="text-slate-500 mt-2 mb-5">Setiap pendapat berharga. Bagikan pengalaman belajarmu!</p>
+ <div class="panel">
+  <h3 class="font-black">💬 Tulis Sticky Note-mu</h3>
+  <form id="reflectionForm" class="mt-4 space-y-3">
+   <div><label class="font-bold text-sm">Nama</label><input id="refName" class="field mt-1" required placeholder="Contoh: Shaka / Haflasea"></div>
+   <div><label class="font-bold text-sm">Perasaan atau kesan belajar</label>
+    <select id="refMood" class="field mt-1">
+     <option>🤩 Sangat menyenangkan</option><option>😊 Menyenangkan</option><option>🤔 Menantang</option><option>😐 Masih membingungkan</option>
+    </select>
+   </div>
+   <div><label class="font-bold text-sm">Pesan refleksi</label><textarea id="refMessage" class="field mt-1" required rows="3" placeholder="Hari ini saya belajar bahwa..."></textarea></div>
+   <button class="btn-primary" type="submit"><i class="fa-solid fa-paper-plane mr-2"></i>Tempel Refleksi</button>
+  </form>
+  <p id="refStatus" class="text-xs text-slate-500 mt-3">Refleksi akan disimpan pada perangkat ini dan dikirim ke spreadsheet jika GAS telah dihubungkan.</p>
+ </div>
+ <div class="mt-7">
+  <div class="flex justify-between items-center mb-4">
+   <h3 class="font-black text-lg">📌 Dinding Inspirasi Kelas</h3>
+   <span id="noteCount" class="pill bg-amber-100 text-amber-700">0 Catatan</span>
+  </div>
+  <div id="notesBoard" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+ </div>
+</section>
+
+</main>
+
+<footer class="mt-12 py-8 text-center">
+ <div class="text-2xl mb-2">📚✨</div>
+ <p class="font-black">MEDIA PEMBELAJARAN INTERAKTIF TKA BAHASA INDONESIA</p>
+ <p class="text-sm text-indigo-200 mt-2">Kelas IX SMP • Kurikulum Nasional</p>
+ <p class="text-sm mt-3">by <b>Siti Sundari, M.Pd.</b></p>
+ <p class="text-xs text-indigo-200 mt-2">Copyright © 2026</p>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ==================================================
+   KONFIGURASI APLIKASI
+   Masukkan URL Web App GAS melalui pengaturan di bawah.
+   ================================================== */
+const CONFIG = {
+ gasUrl: localStorage.getItem('tka_gas_url') || ''
+};
+
+const $ = id => document.getElementById(id);
+let audioOn=false, audioCtx=null;
+let quizLevel='',quizQuestions=[],qIndex=0,score=0,answered=false,student='';
+let selectedGame=[],matched=0;
+
+/* NAVIGASI SPA */
+const pages=['home','tujuan','pemantik','materi','simulasi','kuis','games','kesimpulan','refleksi'];
+function go(id){
+ pages.forEach(p=>$(p).classList.toggle('active',p===id));
+ document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+ if(id==='materi' && !$('materiContent').dataset.ready) renderMateri(0);
+ if(id==='simulasi') runSimulation();
+ if(id==='games') initGame();
+ if(id==='refleksi') renderNotes();
+ if(id==='home') renderHome();
+ sound('click');
+}
+function renderHome(){
+ const items=[
+ ['🎯','Tujuan','tujuan'],['💡','Pemantik','pemantik'],['📚','Materi','materi'],
+ ['🔬','Simulasi','simulasi'],['🏆','Kuis','kuis'],['🎮','Games','games'],
+ ['⭐','Kesimpulan','kesimpulan'],['📝','Refleksi','refleksi']
+ ];
+ $('homeCards').innerHTML=items.map(x=>`<button onclick="go('${x[2]}')" class="card text-left"><div class="text-3xl">${x[0]}</div><b class="block mt-2">${x[1]}</b><span class="text-xs text-slate-500">Klik untuk membuka →</span></button>`).join('');
+}
+
+/* AUDIO SYNTHESIZER */
+function toggleAudio(){
+ audioOn=!audioOn;
+ $('audioBtn').innerHTML=audioOn?'<i class="fa-solid fa-volume-high"></i> Audio ON':'<i class="fa-solid fa-volume-xmark"></i> Audio OFF';
+ if(audioOn){sound('click');toast('🔊 Audio efek aktif');}
+ else toast('🔇 Audio efek nonaktif');
+}
+function sound(type){
+ if(!audioOn)return;
+ try{
+  audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  const config={click:[480,.06],correct:[720,.18],wrong:[180,.2],win:[880,.35]};
+  const [freq,dur]=config[type]||config.click;
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  if(type==='win')osc.frequency.exponentialRampToValueAtTime(1200,audioCtx.currentTime+dur);
+  gain.gain.setValueAtTime(.10,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+  osc.start();osc.stop(audioCtx.currentTime+dur);
+ }catch(e){}
+}
+
+/* INTERAKSI UMUM */
+function toast(msg){
+ $('toast').textContent=msg;$('toast').style.display='block';
+ setTimeout(()=>$('toast').style.display='none',2500);
+}
+function reveal(id,btn){
+ $(id).classList.toggle('hidden');
+ btn.textContent=$(id).classList.contains('hidden')?'Buka Petunjuk':'Tutup Petunjuk';
+ sound('click');
+}
+function mindful(){
+ toast('🧘 Tarik napas... tahan... hembuskan perlahan.');
+ sound('click');
+}
+function confetti(){
+ if(typeof window.confetti==='function'){
+  window.confetti({particleCount:120,spread:80,origin:{y:.65}});
+ }
+}
+
+/* MATERI INTERAKTIF */
+const lessons=[
+ {title:'Ide Pokok & Gagasan Pendukung',icon:'📌',body:`
+ <h2 class="text-xl font-black">📌 Ide Pokok dan Gagasan Pendukung</h2>
+ <p class="mt-3 text-sm leading-relaxed">Ide pokok adalah inti pembahasan dalam paragraf. Gagasan pendukung merupakan penjelasan, bukti, contoh, atau rincian yang mengembangkan ide pokok.</p>
+ <div class="bg-violet-50 p-4 rounded-xl mt-4"><b>Contoh teks:</b><p class="mt-2 text-sm">Perpustakaan sekolah menjadi tempat favorit siswa. Di sana tersedia buku pelajaran, novel, majalah, dan ruang membaca yang nyaman. Siswa juga dapat mengerjakan tugas bersama.</p><p class="mt-3 text-sm text-violet-800"><b>Ide pokok:</b> Perpustakaan sekolah menjadi tempat favorit siswa.</p><p class="text-sm"><b>Pendukung:</b> Koleksi buku beragam, tempat nyaman, dan ruang diskusi.</p></div>
+ <div class="mt-4 bg-amber-50 p-4 rounded-xl text-sm"><b>Tips:</b> Tanyakan, "Paragraf ini terutama membicarakan apa?" lalu periksa kalimat lainnya.</div>`},
+ {title:'Tokoh & Karakter',icon:'👥',body:`
+ <h2 class="text-xl font-black">👥 Tokoh dan Karakter</h2>
+ <p class="text-sm mt-3">Tokoh adalah pelaku dalam cerita. Karakter atau penokohan adalah sifat yang dimiliki tokoh.</p>
+ <div class="grid sm:grid-cols-2 gap-3 mt-4"><div class="bg-cyan-50 p-4 rounded-xl"><b>Tokoh utama</b><p class="text-sm mt-2">Paling banyak terlibat dalam cerita.</p></div><div class="bg-pink-50 p-4 rounded-xl"><b>Tokoh pendukung</b><p class="text-sm mt-2">Mendukung perkembangan cerita.</p></div></div>
+ <p class="text-sm mt-4">Karakter dapat diketahui melalui ucapan, tindakan, pikiran, dan tanggapan tokoh lain.</p>
+ <div class="bg-amber-50 p-4 rounded-xl mt-3 text-sm">Contoh: "Rina mengembalikan dompet yang ditemukannya." Bukti ini menunjukkan Rina jujur.</div>`},
+ {title:'Peristiwa & Latar',icon:'🌍',body:`
+ <h2 class="text-xl font-black">🌍 Peristiwa dan Latar</h2>
+ <p class="text-sm mt-3">Peristiwa adalah kejadian yang dialami tokoh. Latar menjelaskan tempat, waktu, dan suasana berlangsungnya cerita.</p>
+ <div class="space-y-3 mt-4"><div class="bg-blue-50 p-4 rounded-xl"><b>📍 Latar tempat</b><p class="text-sm">Di sekolah, rumah, pasar, hutan.</p></div><div class="bg-amber-50 p-4 rounded-xl"><b>🕒 Latar waktu</b><p class="text-sm">Pagi hari, malam, hari Minggu.</p></div><div class="bg-emerald-50 p-4 rounded-xl"><b>🌤️ Latar suasana</b><p class="text-sm">Tegang, bahagia, sedih, menegangkan.</p></div></div>`},
+ {title:'Tujuan Penulis',icon:'🎯',body:`
+ <h2 class="text-xl font-black">🎯 Menyimpulkan Tujuan Penulis</h2>
+ <p class="text-sm mt-3">Tujuan penulis adalah maksud yang ingin dicapai melalui teks. Perhatikan isi, pilihan kata, struktur, dan ajakan dalam teks.</p>
+ <div class="grid sm:grid-cols-2 gap-3 mt-4"><div class="bg-indigo-50 p-4 rounded-xl"><b>📢 Menginformasikan</b><p class="text-sm">Memberi pengetahuan atau fakta.</p></div><div class="bg-pink-50 p-4 rounded-xl"><b>💖 Menghibur</b><p class="text-sm">Memberi kesenangan melalui cerita.</p></div><div class="bg-amber-50 p-4 rounded-xl"><b>📣 Mengajak</b><p class="text-sm">Mendorong pembaca melakukan sesuatu.</p></div><div class="bg-emerald-50 p-4 rounded-xl"><b>🧠 Meyakinkan</b><p class="text-sm">Membentuk pendapat dengan alasan.</p></div></div>
+ <p class="text-sm mt-4">Jangan menyimpulkan tujuan hanya dari judul. Gunakan bukti isi teks.</p>`},
+ {title:'Isi / Substansi Teks',icon:'📖',body:`
+ <h2 class="text-xl font-black">📖 Menyimpulkan Isi atau Substansi</h2>
+ <p class="text-sm mt-3">Substansi adalah pokok isi atau hal utama yang dibicarakan teks. Kesimpulan harus mewakili informasi penting tanpa menambahkan fakta yang tidak terdapat dalam bacaan.</p>
+ <div class="bg-cyan-50 p-4 rounded-xl mt-4"><b>Langkah menyimpulkan:</b><ol class="list-decimal ml-5 mt-2 text-sm space-y-2"><li>Temukan topik utama.</li><li>Catat informasi penting.</li><li>Hubungkan gagasan yang berkaitan.</li><li>Tulis dengan kalimat sendiri.</li><li>Pastikan kesimpulan sesuai bukti.</li></ol></div>`},
+ {title:'Amanat & Nilai',icon:'💌',body:`
+ <h2 class="text-xl font-black">💌 Pesan, Amanat, dan Nilai</h2>
+ <p class="text-sm mt-3">Amanat merupakan pesan yang ingin disampaikan melalui cerita. Nilai merupakan prinsip kehidupan yang tercermin dalam perilaku tokoh atau peristiwa.</p>
+ <div class="grid sm:grid-cols-2 gap-3 mt-4"><div class="bg-green-50 p-4 rounded-xl"><b>🤝 Sosial</b><p class="text-sm">Tolong-menolong, peduli, kerja sama.</p></div><div class="bg-blue-50 p-4 rounded-xl"><b>🙏 Moral</b><p class="text-sm">Jujur, bertanggung jawab, disiplin.</p></div><div class="bg-amber-50 p-4 rounded-xl"><b>🌿 Lingkungan</b><p class="text-sm">Menjaga alam dan kebersihan.</p></div><div class="bg-purple-50 p-4 rounded-xl"><b>📚 Pendidikan</b><p class="text-sm">Tekun, kreatif, menghargai ilmu.</p></div></div>
+ <p class="text-sm mt-4">Amanat dapat tersurat maupun tersirat. Tafsirkan berdasarkan tindakan dan akibat peristiwa.</p>`},
+ {title:'Perubahan Unsur Intrinsik',icon:'🔄',body:`
+ <h2 class="text-xl font-black">🔄 Perubahan Unsur Intrinsik</h2>
+ <p class="text-sm mt-3">Unsur intrinsik adalah unsur pembangun cerita dari dalam, seperti tema, tokoh, karakter, alur, latar, konflik, dan amanat.</p>
+ <div class="bg-violet-50 rounded-xl p-4 mt-4"><b>Contoh perubahan:</b><p class="text-sm mt-2">Awalnya Dimas tidak peduli terhadap lingkungan. Setelah melihat sungai tercemar, ia mengajak teman-temannya membersihkan sungai.</p><p class="text-sm mt-3"><b>Perubahan karakter:</b> Tidak peduli → peduli.</p><p class="text-sm"><b>Pengaruh:</b> Mengubah tindakan tokoh dan perkembangan konflik.</p></div>
+ <p class="text-sm mt-4">Bandingkan kondisi sebelum dan sesudah peristiwa. Gunakan bukti cerita, bukan dugaan.</p>`},
+ {title:'Membandingkan Antarteks',icon:'🔎',body:`
+ <h2 class="text-xl font-black">🔎 Menyimpulkan Antarteks</h2>
+ <p class="text-sm mt-3">Membaca antarteks berarti menghubungkan informasi dari dua atau lebih teks untuk menemukan persamaan, perbedaan, dan kesimpulan yang lebih luas.</p>
+ <div class="grid md:grid-cols-2 gap-3 mt-4"><div class="bg-blue-50 p-4 rounded-xl"><b>Teks A</b><p class="text-sm mt-2">Menjelaskan manfaat menanam pohon bagi udara.</p></div><div class="bg-green-50 p-4 rounded-xl"><b>Teks B</b><p class="text-sm mt-2">Menjelaskan pentingnya menjaga daerah resapan air.</p></div></div>
+ <div class="bg-indigo-50 p-4 rounded-xl mt-3 text-sm"><b>Simpulan:</b> Kedua teks sama-sama menekankan pentingnya menjaga lingkungan, meskipun membahas aspek yang berbeda.</div>`}
+];
+function renderMateri(index){
+ $('materiContent').dataset.ready='1';
+ $('materiTabs').innerHTML=lessons.map((l,i)=>`<button class="tab ${i===index?'active':''}" onclick="renderMateri(${i})">${l.icon} ${l.title}</button>`).join('');
+ const l=lessons[index];
+ $('materiContent').innerHTML=l.body+`<div class="flex justify-between mt-6 pt-4 border-t"><button class="btn-soft" ${index===0?'disabled':''} onclick="renderMateri(${index-1})">← Sebelumnya</button><button class="btn-primary" ${index===lessons.length-1?'disabled':''} onclick="renderMateri(${index+1})">Selanjutnya →</button></div>`;
+}
+
+/* SIMULASI */
+const simulationAnswers={
+ ide:{a:'Teks membahas kegiatan menanam pohon yang dilakukan siswa di sekolah.',b:'Raka merupakan pemimpin kegiatan menanam pohon.',c:'Kegiatan dilakukan pada hari Sabtu.',d:'Para siswa menunjukkan kerja sama.'},
+ tokoh:{a:'Bukti ini menjelaskan hasil kegiatan, bukan karakter tokoh.',b:'Raka merupakan tokoh yang memimpin kegiatan.',c:'Bukti ini menunjukkan waktu kejadian.',d:'Bukti ini memperlihatkan kerja sama siswa.'},
+ latar:{a:'Bukti ini menjelaskan jumlah bibit, bukan latar.',b:'Raka adalah tokoh dalam cerita.',c:'Latar waktu adalah hari Sabtu.',d:'Bukti ini menggambarkan suasana kerja sama.'},
+ tujuan:{a:'Penulis menginformasikan kegiatan penghijauan dan manfaatnya.',b:'Penulis memperkenalkan tokoh pemimpin kegiatan.',c:'Penulis menyampaikan waktu kegiatan.',d:'Penulis menggambarkan kerja sama peserta.'},
+ amanat:{a:'Kegiatan menanam pohon memberikan manfaat bagi lingkungan.',b:'Kepemimpinan dapat membantu mengorganisasi kegiatan.',c:'Kegiatan berlangsung pada hari Sabtu.',d:'Kita sebaiknya bekerja sama menjaga lingkungan.'},
+ peristiwa:{a:'Peristiwa utama adalah siswa menanam 30 bibit pohon.',b:'Raka memimpin kegiatan.',c:'Kegiatan berlangsung pada hari Sabtu.',d:'Siswa bekerja sama meskipun cuaca panas.'}
+};
+function runSimulation(){
+ const f=$('simFocus').value,e=$('simEvidence').value;
+ $('simResult').innerHTML=`<div class="font-black text-indigo-800">🔍 Hasil Analisis</div><p class="text-sm mt-2">${simulationAnswers[f][e]}</p><p class="text-xs text-slate-500 mt-3">Ingat: satu bukti dapat mendukung lebih dari satu penafsiran, tetapi kesimpulan harus sesuai fokus pertanyaan.</p>`;
+}
+const challengeOptions=[
+ 'Siswa SMP Harapan melaksanakan kegiatan menanam pohon sebagai upaya menjaga lingkungan sekolah.',
+ 'Raka adalah satu-satunya siswa yang bekerja dalam kegiatan sekolah.',
+ 'Kegiatan menanam pohon dilakukan karena sekolah akan mengadakan lomba olahraga.'
+];
+$('simChallenge').innerHTML=challengeOptions.map((s,i)=>`<button class="answer" onclick="checkSimulation(${i},this)">${String.fromCharCode(65+i)}. ${s}</button>`).join('');
+function checkSimulation(i,btn){
+ document.querySelectorAll('#simChallenge button').forEach(b=>b.disabled=true);
+ if(i===0){btn.classList.add('correct');$('simFeedback').textContent='✅ Tepat! Kesimpulan merangkum peristiwa dan tujuan kegiatan sesuai teks.';sound('correct');confetti();}
+ else{btn.classList.add('wrong');$('simFeedback').textContent='❌ Belum tepat. Periksa kembali bukti teks dan hindari menambahkan informasi yang tidak tersedia.';sound('wrong');}
+}
+
+/* BANK SOAL KUIS: 10 SOAL PER LEVEL */
+const questionBank={
+ mudah:[
+ ['Ide pokok adalah ....',['Inti pembahasan paragraf','Nama penulis','Kalimat penutup','Jumlah kalimat'],0,'Ide pokok merupakan inti pembahasan, sedangkan informasi lain mengembangkan ide tersebut.'],
+ ['Gagasan pendukung berfungsi untuk ....',['Mengganti judul','Menjelaskan ide pokok','Menghapus isi teks','Menyebutkan penulis'],1,'Gagasan pendukung memberikan rincian, bukti, atau contoh untuk memperjelas ide pokok.'],
+ ['Pelaku dalam cerita disebut ....',['Latar','Tema','Tokoh','Amanat'],2,'Tokoh merupakan pelaku yang mengalami peristiwa dalam cerita.'],
+ ['Tempat dan waktu terjadinya cerita disebut ....',['Latar','Konflik','Amanat','Sudut pandang'],0,'Latar meliputi tempat, waktu, dan suasana.'],
+ ['Pesan yang ingin disampaikan penulis cerita disebut ....',['Alur','Amanat','Tokoh','Dialog'],1,'Amanat adalah pesan atau pelajaran yang dapat dipetik dari cerita.'],
+ ['Penulis membuat teks berita terutama untuk ....',['Menghibur dengan fantasi','Menyampaikan informasi','Menyembunyikan fakta','Menceritakan mimpi'],1,'Berita umumnya bertujuan menginformasikan peristiwa kepada pembaca.'],
+ ['Kalimat yang mendukung ide pokok disebut ....',['Gagasan pendukung','Judul','Amanat','Konflik'],0,'Gagasan pendukung menjelaskan ide pokok.'],
+ ['Sifat tokoh yang suka menolong disebut ....',['Pemarah','Sombong','Peduli','Malas'],2,'Suka menolong menunjukkan sifat peduli terhadap orang lain.'],
+ ['Kesimpulan yang baik harus ....',['Berdasarkan bukti teks','Berisi pendapat tanpa alasan','Menambah cerita baru','Mengulang seluruh paragraf'],0,'Kesimpulan harus sesuai informasi dan bukti dalam teks.'],
+ ['Peristiwa dalam cerita berarti ....',['Kejadian yang dialami tokoh','Nama penerbit','Jumlah halaman','Jenis huruf'],0,'Peristiwa adalah kejadian yang terjadi dalam rangkaian cerita.']
+ ],
+ sedang:[
+ ['Bacaan: "Hutan mangrove melindungi pantai dari abrasi. Akarnya menahan sedimen dan menjadi tempat hidup berbagai biota." Ide pokoknya adalah ....',['Manfaat hutan mangrove bagi pantai dan ekosistem','Jenis ikan di pantai','Warna akar mangrove','Kegiatan nelayan'],0,'Dua kalimat menjelaskan manfaat mangrove bagi pantai dan ekosistem.'],
+ ['Teks berisi data peningkatan sampah plastik dan ajakan mengurangi kantong sekali pakai. Tujuan penulis adalah ....',['Menghibur pembaca','Mengajak mengurangi plastik','Menceritakan tokoh','Menggambarkan liburan'],1,'Data dan ajakan menunjukkan tujuan persuasif, yakni mendorong perubahan perilaku.'],
+ ['Rani awalnya enggan bekerja kelompok, tetapi kemudian aktif membantu teman. Perubahan karakter Rani adalah ....',['Rajin menjadi malas','Peduli menjadi egois','Pasif menjadi aktif dan kooperatif','Berani menjadi takut'],2,'Perilaku awal dan akhir menunjukkan perkembangan dari pasif menjadi aktif bekerja sama.'],
+ ['Cerita berlangsung di ruang kelas pada pagi hari dengan suasana tegang. Unsur latar yang ditunjukkan adalah ....',['Tokoh dan tema','Tempat, waktu, suasana','Amanat dan konflik','Alur dan sudut pandang'],1,'Ruang kelas adalah tempat, pagi hari adalah waktu, dan tegang adalah suasana.'],
+ ['Dua teks membahas hemat air. Teks A menjelaskan cara menghemat air di rumah, teks B membahas konservasi air di pertanian. Persamaannya adalah ....',['Sama-sama membahas penghematan air','Keduanya tentang transportasi','Sama-sama berupa cerita fiksi','Tidak memiliki hubungan'],0,'Keduanya memiliki tema besar yang sama, yaitu penghematan sumber daya air.'],
+ ['Seorang tokoh meminta maaf setelah merugikan temannya. Amanat yang tepat adalah ....',['Kesalahan tidak perlu diakui','Kejujuran dan tanggung jawab penting','Teman harus selalu disalahkan','Permintaan maaf tidak berguna'],1,'Tindakan tokoh mengajarkan keberanian mengakui kesalahan dan bertanggung jawab.'],
+ ['Kalimat "karena itu, warga mulai memilah sampah" menunjukkan ....',['Hubungan sebab dan akibat','Latar waktu','Pengenalan tokoh','Deskripsi tempat'],0,'Ungkapan tersebut menghubungkan alasan sebelumnya dengan tindakan sebagai akibat.'],
+ ['Teks menjelaskan hasil penelitian tanpa mengajak pembaca melakukan tindakan. Tujuan yang paling mungkin adalah ....',['Menginformasikan hasil penelitian','Menghibur dengan humor','Menyindir tokoh','Mengajak berbelanja'],0,'Penyajian hasil penelitian secara faktual biasanya bertujuan memberi informasi.'],
+ ['Dalam cerita, konflik selesai setelah tokoh bekerja sama. Pengaruhnya terhadap alur adalah ....',['Konflik mengalami penyelesaian','Tokoh menghilang','Latar berubah menjadi judul','Tema tidak ada'],0,'Kerja sama menjadi bagian penyelesaian konflik dalam rangkaian peristiwa.'],
+ ['Kesimpulan yang tidak didukung teks disebut ....',['Kesimpulan berbasis bukti','Inferensi yang tepat','Simpulan tidak valid','Ringkasan objektif'],2,'Simpulan yang menambahkan informasi tanpa bukti tidak dapat dipertanggungjawabkan.']
+ ],
+ sulit:[
+ ['Teks A menyatakan pembangunan taman kota meningkatkan kualitas udara. Teks B menyatakan taman kota menyediakan ruang interaksi sosial. Sintesis terbaik adalah ....',['Taman kota hanya berfungsi sebagai hiasan','Taman kota memiliki manfaat ekologis dan sosial','Kedua teks membahas hal yang bertentangan','Taman kota tidak diperlukan'],1,'Sintesis menggabungkan informasi berbeda yang saling melengkapi dari kedua teks.'],
+ ['Tokoh yang awalnya takut berbicara kemudian berani menyampaikan pendapat setelah didukung temannya. Perubahan tersebut terutama menunjukkan ....',['Perkembangan karakter akibat pengalaman sosial','Perubahan latar tempat','Penghapusan konflik','Perubahan sudut pandang penulis'],0,'Peristiwa dan dukungan sosial menjadi pemicu perkembangan karakter tokoh.'],
+ ['Penulis menyajikan fakta pencemaran, dampak kesehatan, dan langkah pencegahan. Tujuan paling menyeluruh adalah ....',['Sekadar menghibur','Memberi informasi sekaligus mendorong kewaspadaan','Menggambarkan tokoh fiksi','Membuat pembaca melupakan masalah'],1,'Struktur fakta, dampak, dan pencegahan menunjukkan tujuan informatif sekaligus edukatif.'],
+ ['Jika latar cerita diubah dari desa yang tenang menjadi kota yang padat, unsur yang paling mungkin ikut berubah adalah ....',['Suasana dan peluang konflik','Nama pengarang','Jumlah paragraf pasti','Bahasa yang digunakan selalu sama'],0,'Perubahan latar dapat memengaruhi suasana, interaksi tokoh, dan kemungkinan konflik.'],
+ ['Cerita berakhir ketika tokoh mengakui kesalahannya, tetapi tidak langsung dimaafkan. Amanat paling tepat adalah ....',['Semua kesalahan langsung hilang','Mengakui kesalahan merupakan awal tanggung jawab, tetapi kepercayaan perlu dibangun kembali','Permintaan maaf tidak penting','Orang lain wajib melupakan semua kejadian'],1,'Akhir cerita menekankan tanggung jawab dan proses memulihkan kepercayaan.'],
+ ['Teks A berupa laporan data, teks B berupa cerita pengalaman warga tentang banjir. Kesimpulan antarteks yang paling kuat adalah ....',['Keduanya dapat memberi sudut pandang berbeda tentang masalah banjir','Cerita pengalaman selalu lebih akurat dari data','Laporan data tidak memiliki manfaat','Keduanya pasti memiliki penulis sama'],0,'Laporan menyajikan data, sementara pengalaman warga memperkaya pemahaman dampak nyata.'],
+ ['Dalam cerita, tokoh utama berubah dari individualis menjadi peduli setelah mengalami bencana. Perubahan ini paling berkaitan dengan ....',['Perkembangan karakter dan tema sosial','Kesalahan pengetikan','Perubahan jenis huruf','Identitas penerbit'],0,'Perubahan perilaku tokoh memperkuat tema kepedulian sosial.'],
+ ['Penulis menggunakan pertanyaan retoris, data, dan ajakan pada akhir teks. Strategi ini terutama bertujuan ....',['Meyakinkan dan memengaruhi pembaca','Menghilangkan informasi','Mengubah latar cerita','Mengenalkan tokoh baru'],0,'Pertanyaan retoris, bukti, dan ajakan merupakan strategi persuasif.'],
+ ['Kesimpulan antarteks yang baik harus ....',['Menggabungkan semua kalimat tanpa seleksi','Mempertimbangkan persamaan, perbedaan, dan bukti relevan','Mengutamakan satu teks tanpa membaca lainnya','Menambahkan opini yang tidak berhubungan'],1,'Sintesis antarteks memerlukan seleksi bukti dan penalaran atas hubungan informasi.'],
+ ['Jika konflik cerita dihilangkan, dampak yang paling mungkin adalah ....',['Ketegangan dan perkembangan alur berkurang','Tokoh otomatis bertambah','Amanat pasti berubah menjadi sama','Latar tidak dapat disebutkan'],0,'Konflik menggerakkan cerita; tanpa konflik, perkembangan alur dapat menjadi kurang kuat.']
+ ]
+};
+
+function startQuiz(level){
+ student=$('studentName').value.trim();
+ if(!student){toast('Silakan masukkan nama terlebih dahulu.');$('studentName').focus();return;}
+ quizLevel=level;quizQuestions=[...questionBank[level]];qIndex=0;score=0;answered=false;
+ $('quizStart').classList.add('hidden');$('quizResult').classList.add('hidden');$('quizPlay').classList.remove('hidden');
+ $('quizLevel').textContent='LEVEL '+level.toUpperCase();
+ showQuestion();sound('click');
+}
+function showQuestion(){
+ answered=false;
+ const q=quizQuestions[qIndex];
+ $('questionCounter').textContent=`Soal ${qIndex+1}/10`;
+ $('scoreLive').textContent='Skor: '+score;
+ $('quizProgress').style.width=((qIndex+1)*10)+'%';
+ $('questionArea').innerHTML=`<h3 class="font-black text-lg leading-relaxed">${qIndex+1}. ${q[0]}</h3><div class="mt-4">${q[1].map((a,i)=>`<button class="answer quiz-choice" onclick="answerQuestion(${i})"><span class="text-indigo-500 mr-2">${String.fromCharCode(65+i)}.</span>${a}</button>`).join('')}</div>`;
+ $('answerFeedback').classList.add('hidden');$('nextQuestion').classList.add('hidden');
+}
+function answerQuestion(choice){
+ if(answered)return;
+ answered=true;
+ const q=quizQuestions[qIndex],correct=choice===q[2];
+ if(correct)score+=10;
+ document.querySelectorAll('.quiz-choice').forEach((b,i)=>{
+  b.disabled=true;
+  if(i===q[2])b.classList.add('correct');
+  else if(i===choice)b.classList.add('wrong');
+ });
+ $('scoreLive').textContent='Skor: '+score;
+ const fb=$('answerFeedback');
+ fb.classList.remove('hidden');
+ fb.className='rounded-xl p-4 mt-4 text-sm '+(correct?'bg-green-50 text-green-800':'bg-red-50 text-red-800');
+ fb.innerHTML=`<b>${correct?'🎉 Jawaban Benar!':'💡 Belum Tepat!'}</b><p class="mt-2">${q[3]}</p>`;
+ $('nextQuestion').classList.remove('hidden');
+ $('nextQuestion').innerHTML=qIndex===9?'Lihat Hasil 🏆':'Selanjutnya →';
+ sound(correct?'correct':'wrong');
+}
+function nextQuestion(){
+ if(!answered)return;
+ if(qIndex<9){qIndex++;showQuestion();}
+ else finishQuiz();
+}
+function finishQuiz(){
+ $('quizPlay').classList.add('hidden');$('quizResult').classList.remove('hidden');
+ $('resultName').textContent='Hebat, '+student+'! Kamu telah menyelesaikan level '+quizLevel+'.';
+ $('finalScore').textContent=score+'/100';
+ $('certName').textContent=student;
+ $('certDetail').textContent='Level '+quizLevel.toUpperCase()+' • Skor '+score+'/100 • '+new Date().toLocaleDateString('id-ID');
+ $('resultMessage').textContent=score>=80?'Luar biasa! Kamu menunjukkan pemahaman yang sangat baik.':score>=60?'Bagus! Terus tingkatkan kemampuan literasimu.':'Tetap semangat! Pelajari kembali materi dan coba lagi.';
+ confetti();sound('win');
+}
+function exitQuiz(){
+ $('quizPlay').classList.add('hidden');$('quizResult').classList.add('hidden');$('quizStart').classList.remove('hidden');
+}
+
+/* MATCHING GAME */
+const pairs=[
+ ['Ide Pokok','Inti pembahasan teks'],
+ ['Latar','Tempat, waktu, suasana'],
+ ['Amanat','Pesan dalam cerita'],
+ ['Tokoh','Pelaku cerita'],
+ ['Gagasan Pendukung','Penjelas ide pokok']
+];
+function initGame(){
+ const cards=[];
+ pairs.forEach((p,i)=>{cards.push({id:i,side:'a',text:p[0]});cards.push({id:i,side:'b',text:p[1]});});
+ cards.sort(()=>Math.random()-.5);
+ selectedGame=[];matched=0;
+ $('gameScore').textContent='Pasangan: 0/5';
+ $('gameFeedback').textContent='Klik satu kartu konsep, lalu pasangkan dengan penjelasannya.';
+ $('gameBoard').innerHTML=cards.map((c,i)=>`<button id="game${i}" class="answer text-center min-h-24" data-id="${c.id}" onclick="selectGame(${i})">${c.text}</button>`).join('');
+ window.gameCards=cards;
+}
+function selectGame(index){
+ const btn=$('game'+index);
+ if(btn.disabled||selectedGame.includes(index))return;
+ selectedGame.push(index);btn.classList.add('border-indigo-500','bg-indigo-50');
+ sound('click');
+ if(selectedGame.length===2){
+  const [a,b]=selectedGame;
+  const one=window.gameCards[a],two=window.gameCards[b];
+  if(one.id===two.id&&one.side!==two.side){
+   $('game'+a).classList.add('correct');$('game'+b).classList.add('correct');
+   $('game'+a).disabled=true;$('game'+b).disabled=true;
+   matched++;$('gameScore').textContent=`Pasangan: ${matched}/5`;
+   $('gameFeedback').textContent='✅ Pasangan tepat! Lanjutkan.';
+   sound('correct');
+   if(matched===5){$('gameFeedback').textContent='🏆 Sempurna! Kamu menguasai konsep literasi.';confetti();sound('win');}
+  }else{
+   $('gameFeedback').textContent='❌ Belum cocok. Coba perhatikan kembali pengertiannya.';
+   $('game'+a).classList.add('wrong');$('game'+b).classList.add('wrong');sound('wrong');
+   setTimeout(()=>{
+    [a,b].forEach(i=>{$('game'+i).classList.remove('wrong','border-indigo-500','bg-indigo-50');});
+   },650);
+  }
+  selectedGame=[];
+ }
+}
+
+/* REFLEKSI & SPREADSHEET */
+function getNotes(){
+ try{return JSON.parse(localStorage.getItem('tka_reflections')||'[]');}catch(e){return [];}
+}
+function renderNotes(){
+ const notes=getNotes();
+ $('noteCount').textContent=notes.length+' Catatan';
+ $('notesBoard').innerHTML=notes.length?notes.slice().reverse().map(n=>`
+ <div class="note">
+  <div class="font-black text-sm">${escapeHTML(n.name)}</div>
+  <div class="text-xs mt-2">${escapeHTML(n.mood)}</div>
+  <p class="text-sm mt-3">${escapeHTML(n.message)}</p>
+  <div class="text-xs text-slate-500 mt-3">${escapeHTML(n.date)}</div>
+ </div>`).join(''):'<p class="text-sm text-slate-400 col-span-full">Belum ada refleksi. Jadilah yang pertama berbagi! 🌟</p>';
+}
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+$('reflectionForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const note={
+  name:$('refName').value.trim(),
+  mood:$('refMood').value,
+  message:$('refMessage').value.trim(),
+  date:new Date().toLocaleString('id-ID')
+ };
+ if(!note.name||!note.message)return;
+ const notes=getNotes();notes.push(note);
+ localStorage.setItem('tka_reflections',JSON.stringify(notes));
+ renderNotes();$('reflectionForm').reset();sound('correct');
+ $('refStatus').textContent='Catatan tersimpan di perangkat ini.';
+ if(CONFIG.gasUrl){
+  try{
+   await fetch(CONFIG.gasUrl,{
+    method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(note)
+   });
+   $('refStatus').textContent='Catatan disimpan lokal dan permintaan pengiriman ke spreadsheet telah dikirim.';
+  }catch(err){
+   $('refStatus').textContent='Catatan lokal tersimpan. Pengiriman spreadsheet gagal; periksa URL GAS dan koneksi.';
+  }
+ }else{
+  $('refStatus').textContent='Tersimpan secara lokal. Hubungkan URL GAS untuk mengirim ke spreadsheet.';
+ }
+ toast('📝 Refleksimu berhasil ditempel!');
+});
+
+/* PENGATURAN BACKEND */
+function configureBackend(){
+ const url=prompt('Masukkan URL Google Apps Script Web App:',CONFIG.gasUrl);
+ if(url===null)return;
+ if(url.trim()&&!url.includes('/exec')){toast('URL Web App harus diakhiri /exec');return;}
+ CONFIG.gasUrl=url.trim();
+ localStorage.setItem('tka_gas_url',CONFIG.gasUrl);
+ toast(CONFIG.gasUrl?'Koneksi GAS disimpan di perangkat ini.':'Koneksi GAS dihapus.');
+}
+$('refStatus').addEventListener('dblclick',configureBackend);
+$('refStatus').title='Klik dua kali untuk mengatur URL Google Apps Script';
+
+/* INIT */
+renderHome();
+runSimulation();
+initGame();
+</script>
+
+</body>
+</html>
